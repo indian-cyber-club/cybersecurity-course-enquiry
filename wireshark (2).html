@@ -1,0 +1,1736 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireshark Beginner Guide | Indian Cyber Club</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF9933, #FFFFFF, #138808);
+            padding: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #FF9933, #138808);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .brand-text {
+            color: #2c3e50;
+        }
+
+        .brand-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .brand-text p {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            margin: 30px auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-section h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-section p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .wireshark-logo {
+            margin: 30px 0;
+        }
+
+        .content-section {
+            padding: 40px;
+        }
+
+        .table-of-contents {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border-left: 5px solid #3498db;
+        }
+
+        .table-of-contents h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .toc-list li {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .toc-list li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .toc-list a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toc-list i {
+            color: #3498db;
+            width: 20px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 22px;
+            margin: 25px 0 15px 0;
+            padding-left: 20px;
+            border-left: 3px solid #3498db;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .section ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(116, 185, 255, 0.3);
+        }
+
+        .highlight-box h3 {
+            margin: 0 0 15px 0;
+            border: none;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-top: 4px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .tip-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        /* Assignment Section Styles */
+        .assignment-section {
+            border-left: 5px solid #f39c12;
+            background: linear-gradient(135deg, #fef9e7, #f8f9fa);
+        }
+
+        .task-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 4px solid #f39c12;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .task-number {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .task-title {
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .difficulty-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .difficulty-beginner {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .difficulty-intermediate {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+
+        .task-objective {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #27ae60;
+        }
+
+        .task-objective strong {
+            color: #27ae60;
+        }
+
+        .task-steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .task-steps ol {
+            margin-left: 20px;
+        }
+
+        .task-expected {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #2196f3;
+        }
+
+        .task-tips {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 3px solid #ff9800;
+        }
+
+        .submission-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .submission-box h3 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .submission-box p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .submission-email {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .footer-section p, .footer-section li {
+            color: #bdc3c7;
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: #74b9ff;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #bdc3c7;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #3498db;
+            transform: translateY(-3px);
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #3498db;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-to-top:hover {
+            background: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-section h1 {
+                font-size: 36px;
+            }
+
+            .hero-section p {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .task-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .difficulty-badge {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">ICC</div>
+                    <div class="brand-text">
+                        <h1>Indian Cyber Club</h1>
+                        <p>Empowering Cyber Security Professionals</p>
+                    </div>
+                </div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#introduction"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#installation"><i class="fas fa-download"></i> Install</a></li>
+                        <li><a href="#interface"><i class="fas fa-desktop"></i> Interface</a></li>
+                        <li><a href="#analysis"><i class="fas fa-chart-line"></i> Analysis</a></li>
+                        <li><a href="#assignments"><i class="fas fa-tasks"></i> Tasks</a></li>
+                        <li><a href="#resources"><i class="fas fa-book"></i> Resources</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Wireshark Beginner Guide</h1>
+                    <p>Master Network Protocol Analysis with Comprehensive Notes</p>
+                    <div class="image-container wireshark-logo">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/40b76a4a-5472-4c76-b664-7f4b2be4be2c.png" alt="Wireshark logo with shark fin icon and network packet visualization in blue and gray colors representing network protocol analysis tool" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="content-section">
+            <div class="container">
+                <!-- Table of Contents -->
+                <div class="table-of-contents">
+                    <h2><i class="fas fa-list"></i> Table of Contents</h2>
+                    <ul class="toc-list">
+                        <li><a href="#introduction"><i class="fas fa-info-circle"></i> Introduction to Wireshark</a></li>
+                        <li><a href="#installation"><i class="fas fa-download"></i> Installation Guide</a></li>
+                        <li><a href="#interface"><i class="fas fa-desktop"></i> User Interface Overview</a></li>
+                        <li><a href="#capturing"><i class="fas fa-play"></i> Capturing Packets</a></li>
+                        <li><a href="#filters"><i class="fas fa-filter"></i> Applying Filters</a></li>
+                        <li><a href="#analysis"><i class="fas fa-chart-line"></i> Protocol Analysis</a></li>
+                        <li><a href="#exporting"><i class="fas fa-file-export"></i> Exporting Data</a></li>
+                        <li><a href="#best-practices"><i class="fas fa-star"></i> Best Practices</a></li>
+                        <li><a href="#assignments"><i class="fas fa-tasks"></i> Practical Assignments</a></li>
+                        <li><a href="#resources"><i class="fas fa-book"></i> Learning Resources</a></li>
+                    </ul>
+                </div>
+
+                <!-- Section 1: Introduction -->
+                <section id="introduction" class="section">
+                    <h2><i class="fas fa-info-circle"></i> Introduction to Wireshark</h2>
+                    
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f662e88a-1416-43c0-b53e-0f387ebe0a3b.png" alt="Network traffic visualization showing data packets flowing through ethernet cables with digital binary code overlay in blue and green cyber theme colors" />
+                    </div>
+
+                    <p>Wireshark is the world's foremost and widely-used network protocol analyzer. It lets you see what's happening on your network at a microscopic level and is the de facto (and often de jure) standard across many commercial and non-profit enterprises, government agencies, and educational institutions.</p>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-lightbulb"></i> Why Learn Wireshark?</h3>
+                        <p>Network troubleshooting, security analysis, software and protocol development, and education are just a few of the many uses for Wireshark. In the cybersecurity field, it's an essential tool for understanding network communications and identifying potential security threats.</p>
+                    </div>
+
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li><strong>Live capture and offline analysis:</strong> Capture packets in real-time or analyze previously captured data</li>
+                        <li><strong>Deep inspection:</strong> Examine hundreds of protocols with more being added constantly</li>
+                        <li><strong>Rich VoIP analysis:</strong> Comprehensive Voice over IP analysis capabilities</li>
+                        <li><strong>Cross-platform:</strong> Runs on Windows, Linux, macOS, and other platforms</li>
+                        <li><strong>Open source:</strong> Free to use with active community development</li>
+                    </ul>
+                </section>
+
+                <!-- Section 2: Installation -->
+                <section id="installation" class="section">
+                    <h2><i class="fas fa-download"></i> Installation Guide</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/81f31d71-2d40-4d8a-8201-f1f2c038c76c.png" alt="Computer screen showing Wireshark installation wizard with download progress bar and system requirements checklist on a modern desktop setup" />
+                    </div>
+
+                    <h3>System Requirements:</h3>
+                    <ul>
+                        <li>Windows 10/11, macOS 10.14+, or Linux distributions</li>
+                        <li>Minimum 2GB RAM (4GB recommended)</li>
+                        <li>500MB free disk space</li>
+                        <li>Network interface card (NIC)</li>
+                    </ul>
+
+                    <h3>Installation Steps:</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fab fa-windows"></i> Windows Installation</h4>
+                            <p>1. Visit wireshark.org/download.html</p>
+                            <p>2. Download the Windows installer</p>
+                            <p>3. Run as administrator</p>
+                            <p>4. Follow the installation wizard</p>
+                            <p>5. Install Npcap when prompted</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fab fa-linux"></i> Linux Installation</h4>
+                            <p>Ubuntu/Debian:</p>
+                            <div class="code-block">sudo apt update<br>sudo apt install wireshark</div>
+                            <p>CentOS/RHEL:</p>
+                            <div class="code-block">sudo yum install wireshark</div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fab fa-apple"></i> macOS Installation</h4>
+                            <p>1. Download the macOS disk image</p>
+                            <p>2. Open the .dmg file</p>
+                            <p>3. Drag Wireshark to Applications</p>
+                            <p>4. Install ChmodBPF for packet capture</p>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Important Note</h3>
+                        <p>For packet capturing on Windows, you'll need to install Npcap (recommended) or WinPcap. Npcap is the modern packet capture library and is included with recent Wireshark installations.</p>
+                    </div>
+                </section>
+
+                <!-- Section 3: User Interface -->
+                <section id="interface" class="section">
+                    <h2><i class="fas fa-desktop"></i> User Interface Overview</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d2a205b0-5c11-441f-b3d4-a2f5653e98cd.png" alt="Wireshark main interface screenshot showing packet list pane, packet details pane, and packet bytes pane with sample network traffic capture displayed in organized columns" />
+                    </div>
+
+                    <p>Understanding Wireshark's interface is crucial for effective packet analysis. The interface is divided into several key areas:</p>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-bars"></i> Menu Bar & Toolbar</h4>
+                            <p>Contains all the main functions including File operations, Edit functions, View settings, and analysis tools. The toolbar provides quick access to frequently used features.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-list"></i> Packet List Pane</h4>
+                            <p>Displays captured packets in chronological order. Shows time, source, destination, protocol, length, and basic information for each packet.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-info-circle"></i> Packet Details Pane</h4>
+                            <p>Shows detailed protocol information for the selected packet. You can expand different protocol layers to see specific fields and values.</p>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-code"></i> Packet Bytes Pane</h4>
+                            <p>Displays the raw data of the selected packet in both hexadecimal and ASCII format. Useful for low-level analysis.</p>
+                        </div>
+                    </div>
+
+                    <h3>Key Interface Elements:</h3>
+                    <ul>
+                        <li><strong>Filter Bar:</strong> Apply display filters to show specific packets</li>
+                        <li><strong>Status Bar:</strong> Shows capture statistics and filter information</li>
+                        <li><strong>Column Headers:</strong> Click to sort packets by different criteria</li>
+                        <li><strong>Protocol Tree:</strong> Navigate through protocol layers in the details pane</li>
+                    </ul>
+                </section>
+
+                <!-- Section 4: Capturing Packets -->
+                <section id="capturing" class="section">
+                    <h2><i class="fas fa-play"></i> Capturing Packets</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2f5238a3-5340-4e51-bc99-1f5fbdc48862.png" alt="Network interface selection screen in Wireshark showing multiple ethernet and wifi interfaces with real-time traffic graphs and capture statistics" />
+                    </div>
+
+                    <h3>Starting a Capture:</h3>
+                    <ul>
+                        <li>Launch Wireshark with administrator/root privileges</li>
+                        <li>Select the network interface you want to monitor</li>
+                        <li>Click the start button (shark fin icon) or press Ctrl+E</li>
+                        <li>Packets will begin appearing in real-time</li>
+                    </ul>
+
+                    <div class="code-block">
+                        # Command line capture example
+                        sudo wireshark -i eth0 -k
+                        # -i: specify interface
+                        # -k: start capturing immediately
+                    </div>
+
+                    <h3>Capture Options:</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-cog"></i> Interface Selection</h4>
+                            <p>Choose the correct network interface:</p>
+                            <ul>
+                                <li>Ethernet interfaces (eth0, ens33)</li>
+                                <li>WiFi interfaces (wlan0, wlp2s0)</li>
+                                <li>Loopback interface (lo)</li>
+                                <li>USB interfaces</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-filter"></i> Capture Filters</h4>
+                            <p>Set filters before capturing to limit data:</p>
+                            <ul>
+                                <li>host 192.168.1.1</li>
+                                <li>port 80 or port 443</li>
+                                <li>tcp and not ssh</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-clock"></i> Capture Duration</h4>
+                            <p>Control capture length:</p>
+                            <ul>
+                                <li>Set time limits</li>
+                                <li>Set packet count limits</li>
+                                <li>Set file size limits</li>
+                                <li>Ring buffer options</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-shield-alt"></i> Ethical Considerations</h3>
+                        <p>Always ensure you have proper authorization before capturing network traffic. Only capture traffic on networks you own or have explicit permission to monitor. Unauthorized packet capture may violate laws and regulations.</p>
+                    </div>
+                </section>
+
+                <!-- Section 5: Filters -->
+                <section id="filters" class="section">
+                    <h2><i class="fas fa-filter"></i> Applying Filters</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ddc4d54a-09fb-45ac-836c-ca6bfbedfce4.png" alt="Wireshark filter toolbar and expression builder showing various filter options with syntax highlighting and autocomplete suggestions for network protocol filtering" />
+                    </div>
+
+                    <p>Filters are essential for managing large amounts of captured data. Wireshark offers two types of filters:</p>
+
+                    <h3>Display Filters:</h3>
+                    <p>Applied after capture to show/hide specific packets in the packet list.</p>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-globe"></i> Protocol Filters</h4>
+                            <div class="code-block">
+                                http<br>
+                                tcp<br>
+                                dns<br>
+                                ssl<br>
+                                icmp
+                            </div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-network-wired"></i> IP Address Filters</h4>
+                            <div class="code-block">
+                                ip.addr == 192.168.1.1<br>
+                                ip.src == 10.0.0.1<br>
+                                ip.dst == 8.8.8.8<br>
+                                net 192.168.0.0/24
+                            </div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-door-open"></i> Port Filters</h4>
+                            <div class="code-block">
+                                tcp.port == 80<br>
+                                udp.port == 53<br>
+                                tcp.srcport == 443<br>
+                                tcp.dstport == 22
+                            </div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-link"></i> Logical Operators</h4>
+                            <div class="code-block">
+                                http and ip.addr == 192.168.1.1<br>
+                                tcp.port == 80 or tcp.port == 443<br>
+                                not ssh<br>
+                                (http or https) and ip.src == 10.0.0.1
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Capture Filters:</h3>
+                    <p>Applied before capturing to limit what packets are captured (uses Berkeley Packet Filter syntax).</p>
+
+                    <div class="code-block">
+                        # Capture only HTTP traffic
+                        port 80
+                        
+                        # Capture traffic to/from specific host
+                        host 192.168.1.100
+                        
+                        # Capture only TCP traffic
+                        tcp
+                        
+                        # Exclude SSH traffic
+                        not port 22
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-lightbulb"></i> Filter Tips</h3>
+                        <p>Use the filter expression builder (Expression button) for complex filters. Wireshark also provides autocomplete suggestions as you type. Save frequently used filters for quick access.</p>
+                    </div>
+                </section>
+
+                <!-- Section 6: Protocol Analysis -->
+                <section id="analysis" class="section">
+                    <h2><i class="fas fa-chart-line"></i> Protocol Analysis</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ceb7827f-889c-4120-8474-4305b09e6f5f.png" alt="Detailed packet analysis view showing expanded protocol layers including Ethernet, IP, TCP, and HTTP headers with hexadecimal data representation and field descriptions" />
+                    </div>
+
+                    <h3>Analyzing Different Protocols:</h3>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-globe"></i> HTTP Analysis</h4>
+                            <p>Examine web traffic:</p>
+                            <ul>
+                                <li>HTTP requests and responses</li>
+                                <li>Headers and cookies</li>
+                                <li>Status codes</li>
+                                <li>Content types</li>
+                            </ul>
+                            <div class="code-block">http.request.method == "GET"</div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-shield-alt"></i> HTTPS/TLS Analysis</h4>
+                            <p>Secure communications:</p>
+                            <ul>
+                                <li>TLS handshake process</li>
+                                <li>Certificate information</li>
+                                <li>Cipher suites</li>
+                                <li>Encrypted data streams</li>
+                            </ul>
+                            <div class="code-block">tls.handshake.type == 1</div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-search"></i> DNS Analysis</h4>
+                            <p>Domain name resolution:</p>
+                            <ul>
+                                <li>DNS queries and responses</li>
+                                <li>Record types (A, AAAA, MX, etc.)</li>
+                                <li>Response codes</li>
+                                <li>TTL values</li>
+                            </ul>
+                            <div class="code-block">dns.qry.name contains "example.com"</div>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-link"></i> TCP Analysis</h4>
+                            <p>Connection-oriented protocol:</p>
+                            <ul>
+                                <li>Three-way handshake</li>
+                                <li>Sequence numbers</li>
+                                <li>Window sizes</li>
+                                <li>Connection termination</li>
+                            </ul>
+                            <div class="code-block">tcp.flags.syn == 1</div>
+                        </div>
+                    </div>
+
+                    <h3>Analysis Features:</h3>
+                    <ul>
+                        <li><strong>Follow TCP Stream:</strong> View complete conversations between hosts</li>
+                        <li><strong>Protocol Statistics:</strong> Get overview of protocol distribution</li>
+                        <li><strong>IO Graphs:</strong> Visualize traffic patterns over time</li>
+                        <li><strong>Expert Information:</strong> Automatic detection of network issues</li>
+                    </ul>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-stream"></i> Following Streams</h3>
+                        <p>Right-click on a packet and select "Follow" → "TCP Stream" to see the entire conversation. This is particularly useful for analyzing application-layer protocols like HTTP, FTP, or Telnet.</p>
+                    </div>
+                </section>
+
+                <!-- Section 7: Exporting Data -->
+                <section id="exporting" class="section">
+                    <h2><i class="fas fa-file-export"></i> Exporting Data</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/29881543-d5ff-4458-b2e5-5d1fa6324a16.png" alt="Wireshark export dialog window showing various file format options including PCAP, CSV, XML, and JSON with file size and packet count information" />
+                    </div>
+
+                    <h3>Export Options:</h3>
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-file"></i> Packet Data</h4>
+                            <p>Export captured packets:</p>
+                            <ul>
+                                <li>PCAP/PCAPNG format</li>
+                                <li>Selected packets only</li>
+                                <li>Filtered packets</li>
+                                <li>Specific packet ranges</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-table"></i> CSV Format</h4>
+                            <p>Export to spreadsheet:</p>
+                            <ul>
+                                <li>Packet summary information</li>
+                                <li>Custom field selection</li>
+                                <li>Statistical data</li>
+                                <li>Time series data</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-file-alt"></i> Objects & Files</h4>
+                            <p>Extract embedded content:</p>
+                            <ul>
+                                <li>HTTP objects</li>
+                                <li>Images and media files</li>
+                                <li>Documents</li>
+                                <li>Executables</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>Export Steps:</h3>
+                    <ul>
+                        <li>Go to File → Export Specified Packets</li>
+                        <li>Choose the file format and location</li>
+                        <li>Select packet range (all, selected, or filtered)</li>
+                        <li>Configure export options</li>
+                        <li>Click Save to export</li>
+                    </ul>
+
+                    <div class="code-block">
+                        # Command line export examples
+                        tshark -r input.pcap -w output.pcap "http"
+                        tshark -r input.pcap -T csv > output.csv
+                        tshark -r input.pcap -T json > output.json
+                    </div>
+                </section>
+
+                <!-- Section 8: Best Practices -->
+                <section id="best-practices" class="section">
+                    <h2><i class="fas fa-star"></i> Best Practices</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b0d142bb-3205-4752-80ee-74c05e83ca21.png" alt="Cybersecurity best practices infographic showing network monitoring guidelines, ethical hacking principles, and professional certification badges in Indian flag colors" />
+                    </div>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-shield-alt"></i> Legal & Ethical</h4>
+                            <ul>
+                                <li>Only capture on authorized networks</li>
+                                <li>Respect privacy and confidentiality</li>
+                                <li>Follow company policies</li>
+                                <li>Comply with local laws</li>
+                                <li>Document authorization</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-cog"></i> Technical Tips</h4>
+                            <ul>
+                                <li>Use capture filters for large networks</li>
+                                <li>Save captures regularly</li>
+                                <li>Use ring buffers for long captures</li>
+                                <li>Monitor system resources</li>
+                                <li>Validate findings with multiple sources</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-database"></i> Data Management</h4>
+                            <ul>
+                                <li>Organize capture files systematically</li>
+                                <li>Use descriptive file names</li>
+                                <li>Include timestamps and locations</li>
+                                <li>Backup important captures</li>
+                                <li>Delete sensitive data when appropriate</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-chart-line"></i> Analysis Workflow</h4>
+                            <ul>
+                                <li>Start with broad overview</li>
+                                <li>Use filters to narrow focus</li>
+                                <li>Follow protocols layer by layer</li>
+                                <li>Document findings</li>
+                                <li>Cross-reference with other tools</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-graduation-cap"></i> Continuous Learning</h3>
+                        <p>Wireshark is a powerful tool with many advanced features. Regular practice, staying updated with new versions, and participating in the cybersecurity community will help you master network analysis skills.</p>
+                    </div>
+                </section>
+
+                <!-- Section 9: Practical Assignments -->
+                <section id="assignments" class="assignment-section section">
+                    <h2><i class="fas fa-tasks"></i> Practical Assignments</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/39cf15f9-a69b-4772-90e0-26cdb558e864.png" alt="Students working on cybersecurity assignments with laptops showing Wireshark interface, network diagrams on whiteboards, and Indian Cyber Club training materials in a modern classroom setting" />
+                    </div>
+
+                    <p>Complete these hands-on assignments to reinforce your Wireshark learning. Each task is designed to build upon previous knowledge and provide practical experience with real-world scenarios.</p>
+
+                    <!-- Task 1 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">1</div>
+                            <div class="task-title">Basic Packet Capture and Interface Familiarization</div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Learn to capture packets and navigate the Wireshark interface.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Install Wireshark on your system following the installation guide</li>
+                                <li>Launch Wireshark with administrator privileges</li>
+                                <li>Identify and select your active network interface</li>
+                                <li>Start a packet capture for 2-3 minutes</li>
+                                <li>Browse different websites (google.com, youtube.com, etc.)</li>
+                                <li>Stop the capture and explore the three main panes</li>
+                                <li>Click on different packets to see how information changes</li>
+                                <li>Take screenshots of your capture showing different protocol types</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Successfully captured network traffic</li>
+                                <li>Screenshots showing HTTP, TCP, DNS, and other protocols</li>
+                                <li>Understanding of packet list, details, and bytes panes</li>
+                                <li>Ability to identify source/destination IPs and ports</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Use a wired connection if possible for cleaner captures</li>
+                                <li>Close unnecessary applications to reduce network noise</li>
+                                <li>Try right-clicking on packets to explore context menu options</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">2</div>
+                            <div class="task-title">HTTP Traffic Analysis</div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Analyze HTTP traffic and understand web communication protocols.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Start a new packet capture</li>
+                                <li>Visit a non-HTTPS website (like neverssl.com or example.com)</li>
+                                <li>Apply the display filter: <code>http</code></li>
+                                <li>Find HTTP GET and POST requests</li>
+                                <li>Right-click on an HTTP packet and select "Follow TCP Stream"</li>
+                                <li>Analyze the HTTP headers, user-agent, and response codes</li>
+                                <li>Export the HTTP objects from File → Export Objects → HTTP</li>
+                                <li>Document your findings about the communication</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Identification of HTTP request methods (GET, POST)</li>
+                                <li>Understanding of HTTP status codes (200, 404, etc.)</li>
+                                <li>Analysis of HTTP headers (Host, User-Agent, Content-Type)</li>
+                                <li>Successfully exported web objects</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Many modern sites use HTTPS, so find HTTP-only sites for this exercise</li>
+                                <li>Look for images, CSS, and JavaScript files in the HTTP objects</li>
+                                <li>Pay attention to cookies and session information</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">3</div>
+                            <div class="task-title">DNS Query Investigation</div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Understand DNS resolution process and analyze DNS traffic.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Clear your DNS cache: <code>ipconfig /flushdns</code> (Windows) or <code>sudo dscacheutil -flushcache</code> (macOS)</li>
+                                <li>Start packet capture</li>
+                                <li>Apply display filter: <code>dns</code></li>
+                                <li>Visit several different websites</li>
+                                <li>Observe DNS queries and responses</li>
+                                <li>Identify A, AAAA, and CNAME record types</li>
+                                <li>Note the DNS servers being used</li>
+                                <li>Find the response times for DNS queries</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Captured DNS queries and responses</li>
+                                <li>Identification of different DNS record types</li>
+                                <li>Understanding of DNS server addresses</li>
+                                <li>Analysis of DNS response codes and timing</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Look for both IPv4 (A) and IPv6 (AAAA) records</li>
+                                <li>Check if your system uses your router or public DNS servers</li>
+                                <li>Try using nslookup command while capturing to see the difference</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 4 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">4</div>
+                            <div class="task-title">TCP Three-Way Handshake Analysis</div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Analyze TCP connection establishment and termination processes.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Start a fresh packet capture</li>
+                                <li>Apply filter: <code>tcp.flags.syn == 1</code></li>
+                                <li>Open a web browser and visit a website</li>
+                                <li>Find a TCP SYN packet and note its sequence number</li>
+                                <li>Remove the filter and find the corresponding SYN-ACK and ACK packets</li>
+                                <li>Analyze the sequence and acknowledgment numbers</li>
+                                <li>Create a filter to show connection termination: <code>tcp.flags.fin == 1</code></li>
+                                <li>Document the complete TCP connection lifecycle</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Identification of SYN, SYN-ACK, ACK sequence</li>
+                                <li>Understanding of sequence and acknowledgment numbers</li>
+                                <li>Analysis of TCP window sizes</li>
+                                <li>Documentation of connection establishment and termination</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Use the "Follow TCP Stream" feature to see the complete conversation</li>
+                                <li>Look for RST packets which indicate connection resets</li>
+                                <li>Compare different connections to the same server</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 5 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">5</div>
+                            <div class="task-title">Advanced Filtering and Statistics</div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Master advanced filtering techniques and generate network statistics.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Capture network traffic for 10 minutes during normal internet usage</li>
+                                <li>Create and apply these complex filters:
+                                    <ul>
+                                        <li><code>http.request.method == "GET" and http.host contains "google"</code></li>
+                                        <li><code>tcp.port == 80 or tcp.port == 443</code></li>
+                                        <li><code>ip.addr == [your gateway IP] and not arp</code></li>
+                                    </ul>
+                                </li>
+                                <li>Go to Statistics → Protocol Hierarchy</li>
+                                <li>Generate an I/O Graph (Statistics → I/O Graphs)</li>
+                                <li>Check Statistics → Conversations to see traffic patterns</li>
+                                <li>Export filtered data to CSV format</li>
+                                <li>Create a summary report of your findings</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Successful application of complex filters</li>
+                                <li>Protocol hierarchy analysis showing traffic distribution</li>
+                                <li>I/O graphs showing traffic patterns over time</li>
+                                <li>Exported data in CSV format</li>
+                                <li>Comprehensive analysis report</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Save useful filters for future use</li>
+                                <li>Use the Expression builder for complex filters</li>
+                                <li>Experiment with different graph types in I/O Graphs</li>
+                                <li>Compare statistics before and after applying filters</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Task 6 -->
+                    <div class="task-card">
+                        <div class="task-header">
+                            <div class="task-number">6</div>
+                            <div class="task-title">Network Troubleshooting Scenario</div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                        </div>
+
+                        <div class="task-objective">
+                            <strong>Objective:</strong> Use Wireshark to troubleshoot a simulated network issue.
+                        </div>
+
+                        <div class="task-steps">
+                            <strong>Steps to Complete:</strong>
+                            <ol>
+                                <li>Simulate a network issue by:
+                                    <ul>
+                                        <li>Trying to access a non-existent website</li>
+                                        <li>Accessing a website with firewall/proxy issues</li>
+                                        <li>Connecting to a server on a wrong port</li>
+                                    </ul>
+                                </li>
+                                <li>Capture the traffic during these attempts</li>
+                                <li>Use Expert Information (Analyze → Expert Information)</li>
+                                <li>Look for error codes, timeouts, and retransmissions</li>
+                                <li>Apply filters to isolate problem packets:
+                                    <ul>
+                                        <li><code>tcp.analysis.flags</code></li>
+                                        <li><code>icmp.type == 3</code> (Destination Unreachable)</li>
+                                    </ul>
+                                </li>
+                                <li>Document the root cause of each issue</li>
+                                <li>Propose solutions for the identified problems</li>
+                            </ol>
+                        </div>
+
+                        <div class="task-expected">
+                            <strong>Expected Results:</strong>
+                            <ul>
+                                <li>Identification of network issues using packet analysis</li>
+                                <li>Understanding of TCP retransmissions and timeouts</li>
+                                <li>Analysis of ICMP error messages</li>
+                                <li>Troubleshooting report with root causes and solutions</li>
+                            </ul>
+                        </div>
+
+                        <div class="task-tips">
+                            <strong>Tips:</strong>
+                            <ul>
+                                <li>Pay attention to the Expert Info panel for automatic issue detection</li>
+                                <li>Look for patterns in timing and sequence numbers</li>
+                                <li>Use the "Time" column to identify delays</li>
+                                <li>Check for duplicate ACKs and fast retransmissions</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Submission Guidelines -->
+                    <div class="submission-box">
+                        <h3><i class="fas fa-paper-plane"></i> Assignment Submission</h3>
+                        <p>Complete all 6 tasks and compile your findings into a comprehensive report. Include screenshots, analysis, and answers to all questions.</p>
+                        
+                        <div class="submission-email">
+                            assignments@indiancyberclub.org
+                        </div>
+                        
+                        <p><strong>Submission Format:</strong></p>
+                        <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                            <li>PDF report with all screenshots and analysis</li>
+                            <li>Include your name and ICC membership ID</li>
+                            <li>Subject: "Wireshark Assignment - [Your Name]"</li>
+                            <li>Deadline: 2 weeks from starting the course</li>
+                        </ul>
+                        
+                        <p><strong>Evaluation Criteria:</strong></p>
+                        <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                            <li>Completeness of all tasks (40%)</li>
+                            <li>Quality of analysis and explanations (30%)</li>
+                            <li>Proper use of Wireshark features (20%)</li>
+                            <li>Report presentation and organization (10%)</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-trophy"></i> Certificate of Completion</h3>
+                        <p>Successfully complete all assignments to receive an official Indian Cyber Club Wireshark Proficiency Certificate. This certificate demonstrates your practical skills in network protocol analysis and can be added to your professional portfolio.</p>
+                    </div>
+                </section>
+
+                <!-- Section 10: Resources -->
+                <section id="resources" class="section">
+                    <h2><i class="fas fa-book"></i> Learning Resources</h2>
+
+                    <div class="image-container">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b5629cf0-ca2e-41b4-bbdc-5793d8c15686.png" alt="Educational resources collage showing books, online courses, certification badges, and computer screens with Wireshark tutorials in a modern learning environment" />
+                    </div>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-globe"></i> Official Resources</h4>
+                            <ul>
+                                <li><a href="https://www.wireshark.org/docs/" target="_blank">Wireshark Documentation</a></li>
+                                <li><a href="https://wiki.wireshark.org/" target="_blank">Wireshark Wiki</a></li>
+                                <li><a href="https://ask.wireshark.org/" target="_blank">Wireshark Q&A Site</a></li>
+                                <li><a href="https://www.wireshark.org/download.html" target="_blank">Download Latest Version</a></li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-graduation-cap"></i> Online Courses</h4>
+                            <ul>
+                                <li>TryHackMe - Wireshark Basics</li>
+                                <li>Cybrary - Network Analysis courses</li>
+                                <li>Udemy - Wireshark tutorials</li>
+                                <li>Coursera - Network Security courses</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-book-open"></i> Recommended Books</h4>
+                            <ul>
+                                <li>"Wireshark Network Analysis" by Laura Chappell</li>
+                                <li>"Practical Packet Analysis" by Chris Sanders</li>
+                                <li>"Network Analysis using Wireshark" by Yoram Orzach</li>
+                                <li>"Wireshark for Security Professionals" by Jessey Bullock</li>
+                            </ul>
+                        </div>
+                        <div class="tip-card">
+                            <h4><i class="fas fa-users"></i> Community</h4>
+                            <ul>
+                                <li>Wireshark Mailing Lists</li>
+                                <li>Reddit r/wireshark</li>
+                                <li>Stack Overflow</li>
+                                <li>Local cybersecurity meetups</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-flag"></i> Indian Cyber Club Resources</h3>
+                        <p>Join our community for regular workshops, hands-on labs, and mentorship opportunities. Follow us on social media for updates on cybersecurity events and training programs specifically designed for Indian students and professionals.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Indian Cyber Club</h3>
+                    <p>Empowering the next generation of cybersecurity professionals in India through education, training, and community building.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#introduction">Wireshark Introduction</a></li>
+                        <li><a href="#installation">Installation Guide</a></li>
+                        <li><a href="#interface">User Interface</a></li>
+                        <li><a href="#analysis">Protocol Analysis</a></li>
+                        <li><a href="#assignments">Practical Assignments</a></li>
+                        <li><a href="#resources">Learning Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> info@indiancyberclub.org</p>
+                    <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                    <p><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+                    <p><i class="fas fa-globe"></i> www.indiancyberclub.org</p>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 20px; border-top: 1px solid #34495e; margin-top: 30px;">
+                <p>© 2024 Indian Cyber Club. All rights reserved. | Designed for cybersecurity education and awareness.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to top functionality
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Add animation to sections when they come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // Add hover effects to tip cards and task cards
+        document.querySelectorAll('.tip-card, .task-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
+            });
+        });
+
+        // Code block copy functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.style.position = 'relative';
+            block.style.cursor = 'pointer';
+            
+            const copyButton = document.createElement('div');
+            copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+            copyButton.style.position = 'absolute';
+            copyButton.style.top = '10px';
+            copyButton.style.right = '10px';
+            copyButton.style.background = 'rgba(255,255,255,0.2)';
+            copyButton.style.padding = '5px 8px';
+            copyButton.style.borderRadius = '5px';
+            copyButton.style.cursor = 'pointer';
+            copyButton.style.opacity = '0';
+            copyButton.style.transition = 'opacity 0.3s ease';
+            
+            block.appendChild(copyButton);
+            
+            block.addEventListener('mouseenter', () => {
+                copyButton.style.opacity = '1';
+            });
+            
+            block.addEventListener('mouseleave', () => {
+                copyButton.style.opacity = '0';
+            });
+            
+            copyButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const text = block.textContent.replace('', '');
+                navigator.clipboard.writeText(text).then(() => {
+                    copyButton.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        copyButton.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+        });
+
+        // Task progress tracking (localStorage)
+        const taskCheckboxes = document.querySelectorAll('.task-card');
+        taskCheckboxes.forEach((task, index) => {
+            const taskId = `task-${index + 1}`;
+            const completed = localStorage.getItem(taskId) === 'true';
+            
+            // Add completion indicator
+            const completionIndicator = document.createElement('div');
+            completionIndicator.style.position = 'absolute';
+            completionIndicator.style.top = '10px';
+            completionIndicator.style.right = '10px';
+            completionIndicator.style.width = '30px';
+            completionIndicator.style.height = '30px';
+            completionIndicator.style.borderRadius = '50%';
+            completionIndicator.style.display = 'flex';
+            completionIndicator.style.alignItems = 'center';
+            completionIndicator.style.justifyContent = 'center';
+            completionIndicator.style.cursor = 'pointer';
+            completionIndicator.style.transition = 'all 0.3s ease';
+            
+            if (completed) {
+                completionIndicator.style.background = '#27ae60';
+                completionIndicator.style.color = 'white';
+                completionIndicator.innerHTML = '<i class="fas fa-check"></i>';
+                task.style.opacity = '0.8';
+            } else {
+                completionIndicator.style.background = '#ecf0f1';
+                completionIndicator.style.color = '#7f8c8d';
+                completionIndicator.innerHTML = '<i class="fas fa-circle"></i>';
+            }
+            
+            task.style.position = 'relative';
+            task.appendChild(completionIndicator);
+            
+            completionIndicator.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isCompleted = localStorage.getItem(taskId) === 'true';
+                
+                if (isCompleted) {
+                    localStorage.removeItem(taskId);
+                    completionIndicator.style.background = '#ecf0f1';
+                    completionIndicator.style.color = '#7f8c8d';
+                    completionIndicator.innerHTML = '<i class="fas fa-circle"></i>';
+                    task.style.opacity = '1';
+                } else {
+                    localStorage.setItem(taskId, 'true');
+                    completionIndicator.style.background = '#27ae60';
+                    completionIndicator.style.color = 'white';
+                    completionIndicator.innerHTML = '<i class="fas fa-check"></i>';
+                    task.style.opacity = '0.8';
+                }
+                
+                updateProgressBar();
+            });
+        });
+
+        // Progress bar for assignments
+        function updateProgressBar() {
+            const totalTasks = 6;
+            let completedTasks = 0;
+            
+            for (let i = 1; i <= totalTasks; i++) {
+                if (localStorage.getItem(`task-${i}`) === 'true') {
+                    completedTasks++;
+                }
+            }
+            
+            const progressPercentage = (completedTasks / totalTasks) * 100;
+            
+            // Create or update progress bar
+            let progressContainer = document.getElementById('assignment-progress');
+            if (!progressContainer) {
+                progressContainer = document.createElement('div');
+                progressContainer.id = 'assignment-progress';
+                progressContainer.style.background = '#f8f9fa';
+                progressContainer.style.padding = '20px';
+                progressContainer.style.borderRadius = '10px';
+                progressContainer.style.margin = '20px 0';
+                progressContainer.style.textAlign = 'center';
+                
+                const assignmentSection = document.getElementById('assignments');
+                assignmentSection.insertBefore(progressContainer, assignmentSection.children[2]);
+            }
+            
+            progressContainer.innerHTML = `
+                <h4 style="margin-bottom: 15px; color: #2c3e50;">
+                    <i class="fas fa-chart-line"></i> Assignment Progress: ${completedTasks}/${totalTasks} Tasks Completed
+                </h4>
+                <div style="background: #ecf0f1; height: 20px; border-radius: 10px; overflow: hidden;">
+                    <div style="background: linear-gradient(45deg, #27ae60, #2ecc71); height: 100%; width: ${progressPercentage}%; transition: width 0.3s ease; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+                        ${Math.round(progressPercentage)}%
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize progress bar
+        updateProgressBar();
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add loading animation
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
